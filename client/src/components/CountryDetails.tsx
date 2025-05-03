@@ -3,6 +3,7 @@ import { useGlobeData } from "../lib/stores/useGlobeData";
 import { DataCategory } from "../lib/types";
 import { X } from "lucide-react";
 import { formatDataValue } from "../lib/utils/globeUtils";
+import { InterfacePanel, InterfaceTitle, InterfaceStat, InterfaceDivider } from "./ui/interface";
 
 export default function CountryDetails() {
   const { selectedCountry, setSelectedCountry, dataByCountry, countries } = useGlobeData();
@@ -44,76 +45,72 @@ export default function CountryDetails() {
   };
 
   // Generate trend indicator
-  const getTrendIndicator = (category: DataCategory, value: number) => {
+  const getTrendIndicator = (category: DataCategory, value: number): "up" | "down" | "neutral" => {
     // Calculate global average for this category
     const values = Object.values(dataByCountry)
       .map(data => data[category] || 0)
       .filter(val => val > 0);
     
-    if (values.length === 0) return null;
+    if (values.length === 0) return "neutral";
     
     const avg = values.reduce((acc, val) => acc + val, 0) / values.length;
     
     // Determine if value is above or below average
     const ratio = value / avg;
     
-    if (ratio > 1.25) {
-      return <span className="text-green-400">▲ Excellent</span>;
-    } else if (ratio > 1.05) {
-      return <span className="text-green-300">△ Above Average</span>;
-    } else if (ratio > 0.95) {
-      return <span className="text-gray-300">○ Average</span>;
-    } else if (ratio > 0.75) {
-      return <span className="text-red-300">▽ Below Average</span>;
+    if (ratio > 1.10) {
+      return "up";
+    } else if (ratio < 0.90) {
+      return "down";
     } else {
-      return <span className="text-red-500">▼ Poor</span>;
+      return "neutral";
     }
   };
   
   return (
-    <div className="absolute top-20 right-6 z-40">
-      <div className="bg-black bg-opacity-30 backdrop-blur-sm p-5 rounded-lg border border-cyan-900 text-white max-w-md">
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+      <InterfacePanel focused className="p-5 min-w-[350px] max-w-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-cyan-400">{countryData.name}</h2>
+          <InterfaceTitle>{countryData.name}</InterfaceTitle>
           <button 
             onClick={() => setSelectedCountry("")}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-cyan-400 transition-colors"
             aria-label="Close country details"
           >
             <X size={20} />
           </button>
         </div>
         
-        {/* Country data table */}
+        {/* Country data in stats panel */}
         <div className="space-y-3">
           {Object.entries(countryData.data).map(([category, value]) => (
-            <div key={category} className="flex justify-between items-center p-2 rounded bg-gray-900 bg-opacity-50">
-              <span className="text-gray-300">{getCategoryName(category as DataCategory)}</span>
-              <div className="flex flex-col items-end">
-                <span className="text-cyan-400 font-medium">
-                  {formatDataValue(value as number, category as DataCategory)}
-                </span>
-                <span className="text-xs">
-                  {getTrendIndicator(category as DataCategory, value as number)}
-                </span>
-              </div>
-            </div>
+            <InterfaceStat
+              key={category}
+              label={getCategoryName(category as DataCategory)}
+              value={formatDataValue(value as number, category as DataCategory)}
+              trend={getTrendIndicator(category as DataCategory, value as number)}
+            />
           ))}
         </div>
         
         {/* Empty state if no data */}
         {Object.keys(countryData.data).length === 0 && (
-          <div className="text-center py-4 text-gray-400">
+          <div className="text-center py-4 text-gray-400 border border-cyan-900/30 rounded bg-black/20 mt-3">
             <p>No data available for this country</p>
           </div>
         )}
         
-        <div className="mt-4 pt-3 border-t border-gray-700">
-          <p className="text-xs text-gray-400">
-            Country code: {countryData.code}
-          </p>
+        <InterfaceDivider />
+        
+        <div className="flex justify-between items-center">
+          <span className="text-xs text-cyan-800">
+            Country code: <span className="text-cyan-400">{countryData.code}</span>
+          </span>
+          <span className="text-xs text-cyan-800">
+            Source: <span className="text-cyan-600">Global Index Database</span>
+          </span>
         </div>
-      </div>
+      </InterfacePanel>
     </div>
   );
 }

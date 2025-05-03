@@ -2,18 +2,19 @@ import { useEffect } from "react";
 import { useGlobeData } from "../lib/stores/useGlobeData";
 import { DataCategory } from "../lib/types";
 import { useAudio } from "../lib/stores/useAudio";
-import { Badge } from "./ui/badge";
+import { Heart, Smile, Leaf, BarChart2, Shield } from "lucide-react";
+import { InterfaceBadge } from "./ui/interface";
 
 export default function ControlPanel() {
   const { selectedCategory, setSelectedCategory, isLoading } = useGlobeData();
   const { playHit } = useAudio();
   
-  const categories: Array<{ id: DataCategory; label: string; icon: string }> = [
-    { id: "health", label: "Health", icon: "❤️" },
-    { id: "happiness", label: "Happiness", icon: "😊" },
-    { id: "environmental", label: "Environment", icon: "🌱" },
-    { id: "qualityOfLife", label: "Quality of Life", icon: "💰" },
-    { id: "violence", label: "Peace Index", icon: "☮️" }
+  const categories: Array<{ id: DataCategory; label: string; icon: React.ReactNode }> = [
+    { id: "health", label: "Health", icon: <Heart className="w-5 h-5" /> },
+    { id: "happiness", label: "Happiness", icon: <Smile className="w-5 h-5" /> },
+    { id: "environmental", label: "Environment", icon: <Leaf className="w-5 h-5" /> },
+    { id: "qualityOfLife", label: "Quality of Life", icon: <BarChart2 className="w-5 h-5" /> },
+    { id: "violence", label: "Peace Index", icon: <Shield className="w-5 h-5" /> }
   ];
   
   // Handle keyboard shortcuts
@@ -34,7 +35,7 @@ export default function ControlPanel() {
   
   return (
     <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
-      <div className="bg-black bg-opacity-50 backdrop-blur-sm p-2 rounded-xl border border-cyan-900 flex items-center space-x-2 select-none">
+      <div className="bg-black/40 backdrop-blur-md p-2 rounded-xl border border-cyan-900/70 flex items-center space-x-3 select-none">
         {categories.map((category, index) => (
           <button
             key={category.id}
@@ -43,34 +44,46 @@ export default function ControlPanel() {
               playHit();
             }}
             disabled={isLoading}
-            className={`relative group p-3 rounded-lg transition-all duration-300 flex flex-col items-center justify-center min-w-[100px] ${
+            className={`relative group px-4 py-3 rounded-lg transition-all duration-300 flex flex-col items-center justify-center min-w-[100px] ${
               selectedCategory === category.id 
-                ? "bg-cyan-900 text-white" 
-                : "bg-gray-900 bg-opacity-50 text-gray-300 hover:bg-gray-800"
+                ? "bg-cyan-900/80 text-cyan-100" 
+                : "bg-black/50 text-cyan-300 hover:bg-cyan-950/50"
             } ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           >
-            <span className="text-xl mb-1">{category.icon}</span>
+            <div className={`mb-2 transition-colors ${
+              selectedCategory === category.id ? "text-cyan-400" : "text-cyan-600"
+            }`}>
+              {category.icon}
+            </div>
             <span className="text-sm font-medium">{category.label}</span>
             
             {/* Keyboard shortcut badge */}
-            <Badge 
-              variant="outline" 
-              className="absolute -top-2 -right-2 text-xs px-1.5 bg-gray-800 border-cyan-700"
+            <InterfaceBadge 
+              color="cyan"
+              glowing={selectedCategory === category.id}
+              className="absolute -top-2 -right-2 text-xs"
             >
               {index + 1}
-            </Badge>
+            </InterfaceBadge>
+            
+            {/* Bottom indicator line */}
+            <div 
+              className={`absolute bottom-0 left-4 right-4 h-0.5 rounded transition-all duration-300 ${
+                selectedCategory === category.id 
+                  ? "bg-cyan-400" 
+                  : "bg-transparent group-hover:bg-cyan-700/50"
+              }`}
+            />
             
             {/* Glow effect on hover and active */}
-            <div 
-              className={`absolute inset-0 rounded-lg transition-opacity duration-300 pointer-events-none ${
-                selectedCategory === category.id 
-                  ? "opacity-100" 
-                  : "opacity-0 group-hover:opacity-40"
-              }`}
-              style={{
-                boxShadow: "0 0 15px 2px rgba(6, 182, 212, 0.7)",
-              }}
-            />
+            {selectedCategory === category.id && (
+              <div 
+                className="absolute inset-0 rounded-lg pointer-events-none"
+                style={{
+                  boxShadow: "0 0 12px 1px rgba(6, 182, 212, 0.4)",
+                }}
+              />
+            )}
           </button>
         ))}
       </div>

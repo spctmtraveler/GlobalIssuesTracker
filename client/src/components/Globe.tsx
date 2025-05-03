@@ -129,13 +129,16 @@ export default function Globe() {
       />
       
       <group ref={globeRef}>
-        {/* Earth Sphere */}
+        {/* Earth Sphere - Monochromatic blue */}
         <mesh>
           <sphereGeometry args={[1, 64, 64]} />
           <meshStandardMaterial 
-            map={earthTexture}
-            roughness={0.8}
-            metalness={0.2}
+            color="#00c2ff"
+            emissive="#00304d"
+            roughness={0.7}
+            metalness={0.3}
+            opacity={0.95}
+            transparent={true}
           />
         </mesh>
         

@@ -17,66 +17,22 @@ export function geoToVector3(lat: number, lon: number, radius: number = 1): THRE
 
 // Create a mesh for a country
 export function createCountryMesh(feature: Feature, dataValue: number, category: DataCategory): THREE.Mesh {
-  // Get color based on data value and category
+  // Get color based on data value and category - now always in blue spectrum
   const color = getColorForValue(dataValue, category);
   
-  // Create a shape from the country boundaries
-  const shapes: THREE.Shape[] = [];
+  // Create flat circular indicators instead of 3D shapes
+  const radius = 0.025 + (dataValue / 100) * 0.015; // Size based on data value
+  const geometry = new THREE.CircleGeometry(radius, 16);
   
-  if (feature.geometry.type === "Polygon") {
-    const coordinates = feature.geometry.coordinates as number[][][];
-    coordinates.forEach(ring => {
-      const shape = new THREE.Shape();
-      ring.forEach((coord, i) => {
-        const [lon, lat] = coord;
-        const point = geoToVector3(lat, lon);
-        
-        if (i === 0) {
-          shape.moveTo(point.x, point.y);
-        } else {
-          shape.lineTo(point.x, point.y);
-        }
-      });
-      shapes.push(shape);
-    });
-  } else if (feature.geometry.type === "MultiPolygon") {
-    const multiCoordinates = feature.geometry.coordinates as number[][][][];
-    multiCoordinates.forEach(polygon => {
-      polygon.forEach(ring => {
-        const shape = new THREE.Shape();
-        ring.forEach((coord, i) => {
-          const [lon, lat] = coord;
-          const point = geoToVector3(lat, lon);
-          
-          if (i === 0) {
-            shape.moveTo(point.x, point.y);
-          } else {
-            shape.lineTo(point.x, point.y);
-          }
-        });
-        shapes.push(shape);
-      });
-    });
-  }
-  
-  // Create extrusion for the country shape
-  const extrudeSettings = {
-    depth: 0.02 + (dataValue / 100) * 0.08, // Extrude based on data value
-    bevelEnabled: false
-  };
-  
-  // Create the geometry for the country
-  // We use a box for simplicity in this example
-  // In a more detailed implementation, you would use the country shape
-  const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.01);
-  
-  // Create material with the color based on data
+  // Create material with the color based on data - aquamarine/blue palette
   const material = new THREE.MeshStandardMaterial({
     color: new THREE.Color(color),
+    emissive: new THREE.Color(color).multiplyScalar(0.3),
     transparent: true,
-    opacity: 0.8,
-    metalness: 0.2,
-    roughness: 0.5
+    opacity: 0.9,
+    metalness: 0.4,
+    roughness: 0.3,
+    side: THREE.DoubleSide // Make it visible from both sides
   });
   
   // Create mesh
@@ -133,31 +89,32 @@ function getCountryCentroid(feature: Feature): [number, number] {
 
 // Get color based on data value and category
 export function getColorForValue(value: number, category: DataCategory): string {
-  // Default colors (red to green scale)
-  let minColor = "#FF4136"; // Red
-  let maxColor = "#2ECC40"; // Green
+  // Use monochromatic aquamarine/blue colors for all categories
+  // Varying from dark to bright aquamarine/cyan
+  let minColor = "#003850"; // Dark aquamarine
+  let maxColor = "#00e5ff"; // Bright cyan
   
-  // Category-specific color scales
+  // Slight variations for different categories (all in blue/aquamarine spectrum)
   switch (category) {
     case "health":
-      minColor = "#FF4136"; // Red
-      maxColor = "#2ECC40"; // Green
+      minColor = "#004d66"; // Dark blue
+      maxColor = "#00e5ff"; // Bright cyan
       break;
     case "happiness":
-      minColor = "#FF851B"; // Orange
-      maxColor = "#FFDC00"; // Yellow
+      minColor = "#005066"; // Dark teal
+      maxColor = "#00ffcc"; // Bright mint
       break;
     case "environmental":
-      minColor = "#FF4136"; // Red
-      maxColor = "#3D9970"; // Green
+      minColor = "#003850"; // Dark aquamarine
+      maxColor = "#00e5ff"; // Bright cyan
       break;
     case "qualityOfLife":
-      minColor = "#85144b"; // Maroon
-      maxColor = "#0074D9"; // Blue
+      minColor = "#003366"; // Dark blue
+      maxColor = "#4dd6ff"; // Light blue
       break;
     case "violence":
-      minColor = "#FF4136"; // Red
-      maxColor = "#2ECC40"; // Green
+      minColor = "#002b50"; // Very dark blue
+      maxColor = "#00ccff"; // Bright blue
       break;
   }
   
