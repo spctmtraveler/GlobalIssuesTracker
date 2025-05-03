@@ -1,0 +1,66 @@
+🌍 Core Data Categories & Sources
+1. 🏥 Health
+WHO Global Health Observatory (GHO) API
+Offers over 2,300 indicators across 245 countries, including data on life expectancy, disease burden, and healthcare access.
+API Access: WHO GHO OData API
+Medium
+
+Global Health Security Index (GHSI)
+Assesses countries' capacities to prevent and respond to epidemics and pandemics.
+Data Access: GHS Index
+World Health Organization (WHO)
++11
+GHS Index
++11
+Wikipedia
++11
+
+2. 😊 Happiness
+World Happiness Report
+Provides annual rankings based on factors like GDP per capita, social support, healthy life expectancy, freedom, generosity, and corruption perceptions.
+Data Access: World Happiness Report Data Dashboard
+
+3. 🌱 Environmental Health
+Environmental Performance Index (EPI)
+Ranks 180 countries on 58 indicators across 11 issue categories, including air quality, biodiversity, and climate change.
+Data Access: EPI 2022 Results
+Poverty and Inequality Platform
++6
+Environmental Performance Index
++6
+NASA Earthdata
++6
+
+Air Quality Index (AQI) APIs
+Provides real-time air quality data for over 11,000 stations worldwide.
+API Access: World Air Quality Index API
+aqicn.org
+
+4. 💰 Quality of Life / Poverty
+Multidimensional Poverty Index (MPI)
+Measures acute deprivations in health, education, and living standards across 112 countries.
+Data Access: Global MPI 2024
+Environmental Performance Index
++19
+UNdata
++19
+Ophi
++19
+
+World Bank Poverty and Inequality Platform (PIP)
+Offers data on poverty headcount ratios, income distribution, and inequality metrics for over 160 countries.
+API Access: World Bank PIP
+worldbank.github.io
++1
+Wikipedia
++1
+
+🧠 Bonus: Composite Indices for Enhanced Insights
+Human Development Index (HDI)
+Combines indicators of life expectancy, education, and per capita income to assess overall development.
+Data Access: UNDP Human Development Data Center
+
+Worldwide Governance Indicators (WGI)
+Provides data on governance dimensions like political stability, government effectiveness, and rule of law.
+Data Access: World Bank WGI
+Environmental Performance Index
